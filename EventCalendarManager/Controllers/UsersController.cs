@@ -19,9 +19,15 @@
         // GET: HomePage
         public IActionResult Index()
         {
-            return View(db
+            db
                 .Users
-                .FirstOrDefault());
+                .Where(u => u.IsLogged == true)
+                .ToList()
+                .ForEach(u => u.IsLogged = false);
+
+            db.SaveChanges();
+
+            return View();
         }
 
         // GET: Users/Register
@@ -37,6 +43,7 @@
         {
             if (ModelState.IsValid)
             {
+                user.IsLogged = true;
                 db.Add(user);
                 await db
                     .SaveChangesAsync();
@@ -49,7 +56,6 @@
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,6 +72,16 @@
                 return View(user);
             }
 
+            loggedUser.IsLogged = true;
+
+            db
+                .Users
+                .Where(u => u.Id == loggedUser.Id)
+                .FirstOrDefault()
+                .IsLogged = true;
+
+            db.SaveChanges();
+
             return RedirectToAction($"CreateEvent/{loggedUser.Id}");
         }
 
@@ -76,6 +92,15 @@
 
         public IActionResult CreateEvent(int id)
         {
+            if(db
+                .Users
+                .Where(u=>u.Id==id)
+                .FirstOrDefault()
+                .IsLogged == false)
+            {
+                return RedirectToAction("Login");
+            }
+
             if (!db.Users.Any(u => u.Id == id))
             {
                 return View("Error");
@@ -105,7 +130,7 @@
             db.Events.Remove(eventToRemove);
             db.SaveChanges();
 
-            return RedirectToAction("CreateEvent", user);
+            return RedirectToAction($"CreateEvent/{user.Id}");
         }
 
         public IActionResult CreateNewEvent(int? id)
@@ -122,6 +147,11 @@
                 .Users
                 .Where(u => u.Id == newEvent.UserId)
                 .FirstOrDefault();
+
+            if (user.IsLogged==false)
+            {
+                return RedirectToAction("Login");
+            }
 
             if (ModelState.IsValid)
             {

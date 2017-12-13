@@ -24,6 +24,8 @@
         [Required(ErrorMessage = "Password can't be an empty string")]
         public string Password { get; set; }
 
+        public bool IsLogged { get; set; } = false;
+
         public List<Event> Events { get; set; } = new List<Event>();
     }
 }
