@@ -19,13 +19,16 @@
         // GET: HomePage
         public IActionResult Index()
         {
-            db
-                .Users
-                .Where(u => u.IsLogged == true)
-                .ToList()
-                .ForEach(u => u.IsLogged = false);
+            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
+            {
+                db
+               .Users
+               .Where(u => u.IsLogged == true)
+               .ToList()
+               .ForEach(u => u.IsLogged = false);
 
-            db.SaveChanges();
+                db.SaveChanges();
+            }
 
             return View();
         }
@@ -33,7 +36,23 @@
         // GET: Users/Register
         public IActionResult Create()
         {
+            CheckForLoggedUsers();
+
             return View();
+        }
+
+        private void CheckForLoggedUsers()
+        {
+            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
+            {
+                db
+               .Users
+               .Where(u => u.IsLogged == true)
+               .ToList()
+               .ForEach(u => u.IsLogged = false);
+
+                db.SaveChanges();
+            }
         }
 
         // POST: Users/CreatePost
@@ -49,11 +68,23 @@
                     .SaveChangesAsync();
                 return RedirectToAction($"CreateEvent/{user.Id}");
             }
+
             return View(user);
         }
 
         public IActionResult Login()
         {
+            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
+            {
+                db
+               .Users
+               .Where(u => u.IsLogged == true)
+               .ToList()
+               .ForEach(u => u.IsLogged = false);
+
+                db.SaveChanges();
+            }
+
             return View();
         }
 
