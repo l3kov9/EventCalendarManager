@@ -40,7 +40,7 @@
                 db.Add(user);
                 await db
                     .SaveChangesAsync();
-                return RedirectToAction("CreateEvent", user);
+                return RedirectToAction($"CreateEvent/{user.Id}");
             }
             return View(user);
         }
@@ -118,13 +118,16 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateNewEvent([Bind("Title,Date,UserId")] Event newEvent)
         {
-            var user = db.Users.Where(u => u.Id == newEvent.UserId).FirstOrDefault();
+            var user = db
+                .Users
+                .Where(u => u.Id == newEvent.UserId)
+                .FirstOrDefault();
 
             if (ModelState.IsValid)
             {
                 db.Add(newEvent);
                 await db.SaveChangesAsync();
-                return RedirectToAction("CreateEvent", user);
+                return RedirectToAction($"CreateEvent/{user.Id}");
             }
 
             return View(user);

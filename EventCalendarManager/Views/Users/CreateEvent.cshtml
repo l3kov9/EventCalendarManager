@@ -78,7 +78,7 @@
             <tbody>
                 @foreach (var item in Model.Events.OrderBy(e => e.Date))
                 {
-                    if (item.Date >= DateTime.Now)
+                    if (item.Date >= DateTime.Now.AddDays(-1))
                     {
                         <tr>
                             <td>
@@ -87,9 +87,25 @@
                             <td>
                                 @item.Date.ToShortDateString()
                             </td>
-                            <td>
-                                @(Math.Abs((DateTime.Now - item.Date).Days) + 1) days
-                            </td>
+
+                            @if (Math.Abs((DateTime.Now.AddDays(-1) - item.Date).Days) == 0)
+                            {
+                                <td>
+                                    Today
+                                </td>
+                            }
+                            else if (Math.Abs((DateTime.Now.AddDays(-1) - item.Date).Days) == 1)
+                            {
+                                <td>
+                                    Tomorrow
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @(Math.Abs((DateTime.Now.AddDays(-1) - item.Date).Days)) days
+                                </td>
+                            }
                             <td>
                                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
@@ -116,7 +132,7 @@
             <tbody>
                 @foreach (var item in Model.Events.OrderByDescending(e => e.Date))
                 {
-                    if (item.Date < DateTime.Now)
+                    if (item.Date < DateTime.Now.AddDays(-1))
                     {
                         <tr>
                             <td>
