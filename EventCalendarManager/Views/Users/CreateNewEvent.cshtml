@@ -1,0 +1,182 @@
+﻿@model EventCalendarManager.Models.User
+
+@{
+    ViewData["Title"] = "CreateNewEvent";
+}
+<h2 style="padding-left:350px">Create New Event</h2>
+<link href="~/css/style.css" rel="stylesheet" />
+<script src="~/js/bootstrap.js"></script>
+<script src="~/js/jquery-1.10.2.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><br />
+<script src="~/js/daypilot/daypilot-all.min.js" asp-append-version="true"></script>
+<link href="icons/style.css" rel="stylesheet" type="text/css">
+
+<body style="background-color:lightgray">
+    <header>
+        <div class="navbar navbar-default navbar-fixed-top text-uppercase">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="../../Users/CreateEvent/@Model.Id" class="navbar-brand">
+                        <i class="fa fa-arrow-left" style="font-size:20px;color:gray"></i>  Manager
+                    </a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="">Hello,  @Html.ValueFor(model => model.FirstName)   <i class="fa fa-user-secret" style="font-size:20px;color:gray"></i></a> </li>
+                        <li><a href="~/Users/Login">Sign Out  <i class="fa fa-close" style="font-size:20px;color:gray"></i></a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+
+<body style="background-color:lightgray">
+    <div class="main">
+        <div style="float:left;">
+            <div id="nav"></div>
+        </div>
+        <div class="container body-content span=8 offset=2" style="padding-left:350px">
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="CreateNewEvent">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Events.FirstOrDefault().Title" class="control-label"></label>
+                            <input asp-for="Events.FirstOrDefault().Title" class="form-control" />
+                            <span asp-validation-for="Events.FirstOrDefault().Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Events.FirstOrDefault().Date" class="control-label"></label>
+                            <input asp-for="Events.FirstOrDefault().Date" class="form-control" type="date" />
+                            <span asp-validation-for="Events.FirstOrDefault().Date" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" style="visibility:hidden">
+                            <label asp-for="Events.FirstOrDefault().UserId" class="control-label"></label>
+                            <input asp-for="Events.FirstOrDefault().UserId" class="form-control" value=@Model.Id />
+                            <span asp-validation-for="Events.FirstOrDefault().UserId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    var nav = new DayPilot.Navigator("nav");
+    nav.showMonths = 2;
+    nav.skipMonths = 2;
+    nav.selectMode = "month";
+    nav.onTimeRangeSelected = function (args) {
+        dp.startDate = args.day;
+        dp.update();
+        dp.events.load("/api/events");
+    };
+    nav.init();
+
+
+    var dp = new DayPilot.Month("dp");
+
+    dp.contextMenu = new DayPilot.Menu({
+        items: [
+            {
+                text: "Delete",
+                onClick: function (args) {
+                    var e = args.source;
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/api/events/' + e.id(),
+                        success: function (data) {
+                            dp.events.remove(e);
+                            dp.message("Event deleted");
+                        },
+                        contentType: "application/json",
+                        dataType: 'json'
+                    });
+                }
+            },
+            {
+                text: "-"
+            },
+            {
+                text: "Blue",
+                icon: "icon icon-blue",
+                color: "#a2c4c9",
+                onClick: function (args) { updateColor(args.source, args.item.color); }
+            },
+            {
+                text: "Green",
+                icon: "icon icon-green",
+                color: "#b6d7a8",
+                onClick: function (args) { updateColor(args.source, args.item.color); }
+            },
+            {
+                text: "Yellow",
+                icon: "icon icon-yellow",
+                color: "#ffe599",
+                onClick: function (args) { updateColor(args.source, args.item.color); }
+            },
+            {
+                text: "Red",
+                icon: "icon icon-red",
+                color: "#ea9999",
+                onClick: function (args) { updateColor(args.source, args.item.color); }
+            },
+            {
+                text: "Auto",
+                color: "auto",
+                onClick: function (args) { updateColor(args.source, args.item.color); }
+            },
+        ]
+    });
+    dp.init();
+
+    dp.events.load("/api/events");
+
+
+    function updateColor(e, color) {
+        var params = {
+            color: color
+        };
+        $.ajax({
+            type: 'PUT',
+            url: '/api/events/' + e.id() + '/color',
+            data: JSON.stringify(params),
+            success: function (data) {
+                e.data.color = color;
+                dp.events.update(e);
+                dp.message("Color updated");
+            },
+            contentType: "application/json",
+            dataType: 'json'
+        });
+    }
+
+    $(document).ready(function () {
+
+        $("#previous").click(function () {
+            nav.select(nav.selectionDay.addMonths(-1));
+        });
+
+        $("#today").click(function () {
+            nav.select(DayPilot.Date.today());
+        });
+
+        $("#next").click(function () {
+            nav.select(nav.selectionDay.addMonths(1));
+        });
+
+    });
+
+</script>
+
