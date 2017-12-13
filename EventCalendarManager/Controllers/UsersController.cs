@@ -19,16 +19,7 @@
         // GET: HomePage
         public IActionResult Index()
         {
-            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
-            {
-                db
-               .Users
-               .Where(u => u.IsLogged == true)
-               .ToList()
-               .ForEach(u => u.IsLogged = false);
-
-                db.SaveChanges();
-            }
+            CheckForLoggedUsers();
 
             return View();
         }
@@ -41,20 +32,6 @@
             return View();
         }
 
-        private void CheckForLoggedUsers()
-        {
-            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
-            {
-                db
-               .Users
-               .Where(u => u.IsLogged == true)
-               .ToList()
-               .ForEach(u => u.IsLogged = false);
-
-                db.SaveChanges();
-            }
-        }
-
         // POST: Users/CreatePost
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -64,8 +41,7 @@
             {
                 user.IsLogged = true;
                 db.Add(user);
-                await db
-                    .SaveChangesAsync();
+                await db.SaveChangesAsync();
                 return RedirectToAction($"CreateEvent/{user.Id}");
             }
 
@@ -74,16 +50,7 @@
 
         public IActionResult Login()
         {
-            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
-            {
-                db
-               .Users
-               .Where(u => u.IsLogged == true)
-               .ToList()
-               .ForEach(u => u.IsLogged = false);
-
-                db.SaveChanges();
-            }
+            CheckForLoggedUsers();
 
             return View();
         }
@@ -123,9 +90,9 @@
 
         public IActionResult CreateEvent(int id)
         {
-            if(db
+            if (db
                 .Users
-                .Where(u=>u.Id==id)
+                .Where(u => u.Id == id)
                 .FirstOrDefault()
                 .IsLogged == false)
             {
@@ -158,7 +125,10 @@
                 .Where(u => u.Events.Any(e => e.Id == id))
                 .FirstOrDefault();
 
-            db.Events.Remove(eventToRemove);
+            db
+                .Events
+                .Remove(eventToRemove);
+
             db.SaveChanges();
 
             return RedirectToAction($"CreateEvent/{user.Id}");
@@ -166,7 +136,11 @@
 
         public IActionResult CreateNewEvent(int? id)
         {
-            var user = db.Users.Where(u => u.Id == id).FirstOrDefault();
+            var user = db
+                .Users
+                .Where(u => u.Id == id)
+                .FirstOrDefault();
+
             return View(user);
         }
 
@@ -179,7 +153,7 @@
                 .Where(u => u.Id == newEvent.UserId)
                 .FirstOrDefault();
 
-            if (user.IsLogged==false)
+            if (user.IsLogged == false)
             {
                 return RedirectToAction("Login");
             }
@@ -196,7 +170,23 @@
 
         private bool UserExists(int id)
         {
-            return db.Users.Any(e => e.Id == id);
+            return db
+                .Users
+                .Any(e => e.Id == id);
+        }
+
+        private void CheckForLoggedUsers()
+        {
+            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
+            {
+                db
+               .Users
+               .Where(u => u.IsLogged == true)
+               .ToList()
+               .ForEach(u => u.IsLogged = false);
+
+                db.SaveChanges();
+            }
         }
     }
 }

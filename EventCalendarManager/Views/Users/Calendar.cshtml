@@ -1,9 +1,13 @@
 ﻿@model EventCalendarManager.Models.User
 
-<link href="~/css/style.css" rel="stylesheet" />
 <script src="~/js/bootstrap.js"></script>
 <script src="~/js/jquery-1.10.2.js"></script>
+<script src="~/js/daypilot/daypilot-all.min.js" asp-append-version="true"></script>
+
+<link href="~/css/style.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="icons/style.css" rel="stylesheet" type="text/css">
+
 <br /><br />
 
 <body style="background-color:lightgray">
@@ -30,10 +34,6 @@
     </header>
 </body>
 
-
-<script src="~/js/daypilot/daypilot-all.min.js" asp-append-version="true"></script>
-<link href="icons/style.css" rel="stylesheet" type="text/css">
-
 <div class="main">
     <div style="float:left;">
         <div id="nav"></div>
@@ -48,10 +48,7 @@
     </div>
 </div>
 
-
-
 <script>
-
     var nav = new DayPilot.Navigator("nav");
     nav.showMonths = 3;
     nav.skipMonths = 3;
@@ -221,5 +218,4 @@
         });
 
     });
-
 </script>
