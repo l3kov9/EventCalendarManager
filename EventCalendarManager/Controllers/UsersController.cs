@@ -177,13 +177,13 @@
 
         private void CheckForLoggedUsers()
         {
-            if (db.Users.Where(u => u.IsLogged == true).Count() > 0)
+            if (db.Users.Any(u => u.IsLogged == true))
             {
                 db
                .Users
                .Where(u => u.IsLogged == true)
-               .ToList()
-               .ForEach(u => u.IsLogged = false);
+               .FirstOrDefault()
+               .IsLogged = false;
 
                 db.SaveChanges();
             }
