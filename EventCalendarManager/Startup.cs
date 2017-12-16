@@ -30,16 +30,16 @@
             }
             else
             {
-                app.UseExceptionHandler("/Users/Error");
+                app.UseExceptionHandler("/User/Error");
             }
 
             app.UseStaticFiles();
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Users}/{action=Index}/{id?}");
+                    template: "{controller=User}/{action=Index}/{id?}");
             });
         }
     }

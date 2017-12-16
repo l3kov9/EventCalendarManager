@@ -25,6 +25,10 @@
                 .HasMany(u => u.Events)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId);
+
+            builder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

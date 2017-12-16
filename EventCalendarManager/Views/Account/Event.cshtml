@@ -1,7 +1,7 @@
 ﻿@model EventCalendarManager.Models.User
 
 @{
-    ViewData["Title"] = "CreateNewEvent";
+    ViewData["Title"] = "Event";
 }
 <script src="~/js/bootstrap.js"></script>
 <script src="~/js/jquery-1.10.2.js"></script>
@@ -18,7 +18,7 @@
         <div class="navbar navbar-default navbar-fixed-top text-uppercase">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="../../Users/CreateEvent/@Model.Id" class="navbar-brand">
+                    <a href="Manager/@Model.Id" class="navbar-brand">
                         <i class="fa fa-arrow-left" style="font-size:20px;color:gray"></i>  Manager
                     </a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -30,7 +30,7 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="">Hello,  @Html.ValueFor(model => model.FirstName)   <i class="fa fa-user-secret" style="font-size:20px;color:gray"></i></a> </li>
-                        <li><a href="~/Users">Sign Out  <i class="fa fa-close" style="font-size:20px;color:gray"></i></a> </li>
+                        <li><a href="~/User">Sign Out  <i class="fa fa-close" style="font-size:20px;color:gray"></i></a> </li>
                     </ul>
                 </div>
             </div>
@@ -46,7 +46,7 @@
         <div class="container body-content span=8 offset=2" style="padding-left:350px">
             <div class="row">
                 <div class="col-md-4">
-                    <form asp-action="CreateNewEvent">
+                    <form asp-action="Event">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label asp-for="Events.FirstOrDefault().Title" class="control-label"></label>

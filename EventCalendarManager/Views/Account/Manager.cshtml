@@ -1,7 +1,7 @@
 ﻿@model EventCalendarManager.Models.User
 
 @{
-    ViewData["Title"] = "CreateEvent";
+    ViewData["Title"] = "Manager";
 }
 
 <script src="~/js/bootstrap.js"></script>
@@ -34,7 +34,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="~/Users">
+                            <a href="~/User">
                                 Sign Out   <i class="fa fa-close" style="font-size:20px;color:gray"></i>
                             </a>
                         </li>
@@ -51,11 +51,9 @@
     </div>
     <div style="margin-left: 200px;">
         <p>
-            <a asp-action="CreateNewEvent/@Model.Id"><h3>Create New Event</h3></a>
+            <a asp-action="Event/@Model.Id"><h3>Create New Event</h3></a>
         </p>
-
         <br />
-
         <h2>Upcoming events:</h2>
 
         <table class="table">
@@ -113,7 +111,6 @@
                 }
             </tbody>
         </table>
-
         <br /><br />
         <h2>Finished events:</h2>
         <table class="table">
