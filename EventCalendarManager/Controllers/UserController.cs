@@ -44,7 +44,7 @@
                 user.IsLogged = true;
                 db.Add(user);
                 await db.SaveChangesAsync();
-                return RedirectToAction($"../Account/Manager/{user.Id}");
+                return RedirectToAction($"Manager/{user.Id}", "Account");
             }
 
             return View(user);
@@ -82,7 +82,7 @@
 
             db.SaveChanges();
 
-            return RedirectToAction($"../Account/Manager/{loggedUser.Id}");
+            return RedirectToAction($"Manager/{loggedUser.Id}", "Account");
         }
 
         // Get Calendar
