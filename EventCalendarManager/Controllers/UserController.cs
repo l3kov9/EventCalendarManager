@@ -19,6 +19,8 @@
         // GET: Home Page
         public IActionResult Index()
         {
+            CheckForLoggedUsers();
+
             return View();
         }
 
